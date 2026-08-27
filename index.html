@@ -42,18 +42,18 @@
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       document.body.appendChild(renderer.domElement);
 
-      // Enhanced ambient light for better overall visibility
-      const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+      // Increased ambient light
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1.8);
       scene.add(ambientLight);
 
-      // Directional light for definition and depth
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      // Stronger directional light
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
       directionalLight.position.set(5, 5, 5);
       directionalLight.castShadow = true;
       scene.add(directionalLight);
 
-      // Additional fill light from opposite side
-      const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
+      // Brighter fill light
+      const fillLight = new THREE.DirectionalLight(0xffffff, 0.8);
       fillLight.position.set(-5, -2, 3);
       scene.add(fillLight);
 
@@ -63,9 +63,9 @@
       // Test geometry - temporary glasses placeholder
       const glassesGeometry = new THREE.BoxGeometry(2, 1, 0.2);
       const glassesMaterial = new THREE.MeshStandardMaterial({ 
-        color: 0x333333,
-        metalness: 0.7,
-        roughness: 0.3
+        color: 0xcccccc,
+        metalness: 0.5,
+        roughness: 0.2
       });
       const testGlasses = new THREE.Mesh(glassesGeometry, glassesMaterial);
       productGroup.add(testGlasses);
