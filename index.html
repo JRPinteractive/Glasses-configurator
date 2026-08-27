@@ -60,6 +60,16 @@
       const productGroup = new THREE.Group();
       scene.add(productGroup);
 
+      // Test geometry - temporary glasses placeholder
+      const glassesGeometry = new THREE.BoxGeometry(2, 1, 0.2);
+      const glassesMaterial = new THREE.MeshStandardMaterial({ 
+        color: 0x333333,
+        metalness: 0.7,
+        roughness: 0.3
+      });
+      const testGlasses = new THREE.Mesh(glassesGeometry, glassesMaterial);
+      productGroup.add(testGlasses);
+
       window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
