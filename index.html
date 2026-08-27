@@ -42,17 +42,17 @@
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       document.body.appendChild(renderer.domElement);
 
-      // Brighter ambient light to lift the background
+      // Brighter ambient light
       const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
       scene.add(ambientLight);
 
-      // Strong directional light for definition and shine
+      // Strong directional light for shine
       const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
       directionalLight.position.set(5, 8, 5);
       directionalLight.castShadow = true;
       scene.add(directionalLight);
 
-      // Fill light for soft shadows
+      // Fill light
       const fillLight = new THREE.DirectionalLight(0xffffff, 0.6);
       fillLight.position.set(-5, -2, 3);
       scene.add(fillLight);
@@ -60,40 +60,74 @@
       const productGroup = new THREE.Group();
       scene.add(productGroup);
 
-      // Create glasses with two lenses
+      // Realistic glasses structure
       const glassesGroup = new THREE.Group();
       productGroup.add(glassesGroup);
 
-      // Left lens - glossy sphere
-      const lensGeometry = new THREE.IcosahedronGeometry(0.8, 16);
+      // Lens material - flat, semi-transparent with slight tint
       const lensMaterial = new THREE.MeshStandardMaterial({
-        color: 0xcccccc,
-        metalness: 0.9,
+        color: 0x88ccff,
+        metalness: 0.3,
         roughness: 0.1,
-        envMapIntensity: 1.0
+        transparent: true,
+        opacity: 0.7,
+        side: THREE.DoubleSide
       });
-      const leftLens = new THREE.Mesh(lensGeometry, lensMaterial);
-      leftLens.position.x = -1.2;
-      glassesGroup.add(leftLens);
 
-      // Right lens - glossy sphere
-      const rightLens = new THREE.Mesh(lensGeometry, lensMaterial);
-      rightLens.position.x = 1.2;
-      glassesGroup.add(rightLens);
-
-      // Bridge - connecting cylinder
-      const bridgeGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.8, 16);
-      const bridgeMaterial = new THREE.MeshStandardMaterial({
-        color: 0xaaaaaa,
+      // Frame material - metallic
+      const frameMaterial = new THREE.MeshStandardMaterial({
+        color: 0x2a2a2a,
         metalness: 0.8,
         roughness: 0.2
       });
-      const bridge = new THREE.Mesh(bridgeGeometry, bridgeMaterial);
-      bridge.rotation.z = Math.PI / 2;
+
+      // LEFT LENS - flat disc
+      const lensGeometry = new THREE.CylinderGeometry(0.6, 0.6, 0.05, 32);
+      const leftLens = new THREE.Mesh(lensGeometry, lensMaterial);
+      leftLens.position.set(-1.0, 0, 0);
+      leftLens.rotation.y = 0.1; // slight angle
+      glassesGroup.add(leftLens);
+
+      // LEFT FRAME - ring around lens
+      const frameGeometry = new THREE.TorusGeometry(0.65, 0.08, 16, 100);
+      const leftFrame = new THREE.Mesh(frameGeometry, frameMaterial);
+      leftFrame.position.set(-1.0, 0, 0);
+      leftFrame.rotation.y = 0.1;
+      glassesGroup.add(leftFrame);
+
+      // RIGHT LENS - flat disc
+      const rightLens = new THREE.Mesh(lensGeometry, lensMaterial);
+      rightLens.position.set(1.0, 0, 0);
+      rightLens.rotation.y = -0.1; // slight angle
+      glassesGroup.add(rightLens);
+
+      // RIGHT FRAME - ring around lens
+      const rightFrame = new THREE.Mesh(frameGeometry, frameMaterial);
+      rightFrame.position.set(1.0, 0, 0);
+      rightFrame.rotation.y = -0.1;
+      glassesGroup.add(rightFrame);
+
+      // BRIDGE - connecting the two frames
+      const bridgeGeometry = new THREE.BoxGeometry(0.4, 0.15, 0.08);
+      const bridge = new THREE.Mesh(bridgeGeometry, frameMaterial);
+      bridge.position.set(0, 0, 0);
       glassesGroup.add(bridge);
 
-      // Slight rotation for better viewing angle
-      glassesGroup.rotation.x = 0.1;
+      // LEFT ARM/TEMPLE - extends back
+      const armGeometry = new THREE.BoxGeometry(0.1, 0.12, 1.8);
+      const leftArm = new THREE.Mesh(armGeometry, frameMaterial);
+      leftArm.position.set(-1.0, -0.15, -0.9);
+      leftArm.rotation.z = 0.05;
+      glassesGroup.add(leftArm);
+
+      // RIGHT ARM/TEMPLE - extends back
+      const rightArm = new THREE.Mesh(armGeometry, frameMaterial);
+      rightArm.position.set(1.0, -0.15, -0.9);
+      rightArm.rotation.z = -0.05;
+      glassesGroup.add(rightArm);
+
+      // Slight overall tilt for better viewing
+      glassesGroup.rotation.x = 0.15;
 
       window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
