@@ -9,7 +9,7 @@
       body {
         margin: 0;
         min-height: 100%;
-        background: #101114;
+        background: #1a1a1e;
       }
 
       body {
@@ -25,7 +25,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
     <script>
       const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x101114);
+      scene.background = new THREE.Color(0x1a1a1e);
 
       const camera = new THREE.PerspectiveCamera(
         45,
@@ -42,33 +42,58 @@
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       document.body.appendChild(renderer.domElement);
 
-      // Increased ambient light
-      const ambientLight = new THREE.AmbientLight(0xffffff, 1.8);
+      // Brighter ambient light to lift the background
+      const ambientLight = new THREE.AmbientLight(0xffffff, 2.0);
       scene.add(ambientLight);
 
-      // Stronger directional light
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
-      directionalLight.position.set(5, 5, 5);
+      // Strong directional light for definition and shine
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+      directionalLight.position.set(5, 8, 5);
       directionalLight.castShadow = true;
       scene.add(directionalLight);
 
-      // Brighter fill light
-      const fillLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      // Fill light for soft shadows
+      const fillLight = new THREE.DirectionalLight(0xffffff, 0.6);
       fillLight.position.set(-5, -2, 3);
       scene.add(fillLight);
 
       const productGroup = new THREE.Group();
       scene.add(productGroup);
 
-      // Test geometry - temporary glasses placeholder
-      const glassesGeometry = new THREE.BoxGeometry(2, 1, 0.2);
-      const glassesMaterial = new THREE.MeshStandardMaterial({ 
+      // Create glasses with two lenses
+      const glassesGroup = new THREE.Group();
+      productGroup.add(glassesGroup);
+
+      // Left lens - glossy sphere
+      const lensGeometry = new THREE.IcosahedronGeometry(0.8, 16);
+      const lensMaterial = new THREE.MeshStandardMaterial({
         color: 0xcccccc,
-        metalness: 0.5,
+        metalness: 0.9,
+        roughness: 0.1,
+        envMapIntensity: 1.0
+      });
+      const leftLens = new THREE.Mesh(lensGeometry, lensMaterial);
+      leftLens.position.x = -1.2;
+      glassesGroup.add(leftLens);
+
+      // Right lens - glossy sphere
+      const rightLens = new THREE.Mesh(lensGeometry, lensMaterial);
+      rightLens.position.x = 1.2;
+      glassesGroup.add(rightLens);
+
+      // Bridge - connecting cylinder
+      const bridgeGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.8, 16);
+      const bridgeMaterial = new THREE.MeshStandardMaterial({
+        color: 0xaaaaaa,
+        metalness: 0.8,
         roughness: 0.2
       });
-      const testGlasses = new THREE.Mesh(glassesGeometry, glassesMaterial);
-      productGroup.add(testGlasses);
+      const bridge = new THREE.Mesh(bridgeGeometry, bridgeMaterial);
+      bridge.rotation.z = Math.PI / 2;
+      glassesGroup.add(bridge);
+
+      // Slight rotation for better viewing angle
+      glassesGroup.rotation.x = 0.1;
 
       window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
